@@ -72,12 +72,14 @@ this.password = await bcrypt.hash(this.password, 10)
 userSchema.methods.comparePassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password)
 }
-userSchema.methods.generateJsonWebToken = function(){
-    return jwt.sign({id: this._id}, process.env.JWT_SECRET_KEY,{
-        expiresIn:process.env.JWT_EXPIRE,
+userSchema.methods.generateJsonWebToken = function () {
+  if (!process.env.JWT_SECRET_KEY) {
+      throw new Error("JWT_SECRET_KEY is not defined in the environment variables.");
+  }
+  return jwt.sign({ id: this._id, role: this.role }, process.env.JWT_SECRET_KEY, {
+      expiresIn: process.env.JWT_EXPIRE || "7d",
+  });
+};
 
-    }
-    )
-}
 
 export const User = mongoose.model("User", userSchema);

@@ -4,9 +4,9 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import userRouter from './router/userRouter.js';
 
-console.log(`MONGO_URI: ${process.env.MONGO_URI}`);
+dotenv.config({ path: './config.env' });
 
-dotenv.config();
+console.log('JWT_SECRET_KEY:', process.env.JWT_SECRET_KEY); 
 
 const app = express();
 
@@ -28,7 +28,7 @@ mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
   });
 
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
