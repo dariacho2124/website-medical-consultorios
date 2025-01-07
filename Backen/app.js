@@ -42,7 +42,7 @@ app.use(
 dbconnection();
 
 // Rutas
-app.use("/api/v1/message", messageRouter);
+
 app.use("/api/v1/user", userRouter);
 
 // Middleware de manejo de errores
