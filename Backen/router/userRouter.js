@@ -3,7 +3,6 @@ import { patientRegister, login, addNewAdmin, getAllDoctors, getUserDetails, log
 import { isAdminAuthenticated,isPatientAuthenticated } from '../middleware/auth.js';
 
 const router = express.Router();
-
 router.post('/patient/register', patientRegister);  
 router.post('/login', login);  
 router.post('/admin/addnew', addNewAdmin);//AdminAuthenticated, middleware pedniente de revisar 

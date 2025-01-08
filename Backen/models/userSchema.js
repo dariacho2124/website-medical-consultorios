@@ -55,10 +55,6 @@ const userSchema = new mongoose.Schema({
   doctorDepartment:{
     type:String,
 
-  },
-  docAvatar: {
-    public_id:String,
-    url:String
   }
 });
 
