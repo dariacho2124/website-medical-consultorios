@@ -49,32 +49,26 @@ export const patientRegister = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const login = catchAsyncErrors(async (req, res, next) => {
-  const { email, password, role } = req.body; // Asegúrate de que el rol sea enviado en la solicitud.
+  const { email, password } = req.body;
 
-  if (!email || !password || !role) {
+  if (!email || !password) {
     return next(
       new ErrorHandler("Please provide email, password, and role", 400)
     );
   }
 
-  // Busca al usuario por correo.
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
     return next(new ErrorHandler("Invalid email or password", 400));
   }
 
-  // Verifica si la contraseña coincide.
   const isPasswordMatched = await user.comparePassword(password);
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password", 400));
   }
 
-  // Valida el rol del usuario.
-  if (user.role !== role) {
-    return next(new ErrorHandler(`Access denied for role: ${role}`, 403));
-  }
 
-  // Genera el token si todo es válido.
+
   generateToken(user, "User login success!", 200, res);
 });
 
@@ -158,13 +152,10 @@ export const logoutPatient = catchAsyncErrors(async (req, res, next) => {
     })
     .json({
       success: true,
-      message: "Patient Logged  Out Successfully !!",
     });
 });
 
 export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
- 
-
   const {
     firstName,
     lastName,
@@ -201,8 +192,6 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-
-
   const doctor = await User.create({
     firstName,
     lastName,
@@ -214,7 +203,6 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
     nic,
     doctorDepartment,
     role: "Doctor", // Se asigna el rol "Doctor"
-
   });
 
   res.status(200).json({
@@ -222,4 +210,26 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
     message: "New Doctor Registered !!",
     doctor,
   });
+});
+export const loginForDashboard = catchAsyncErrors(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return next(new ErrorHandler("Please provide email and password", 400));
+  }
+
+  // Buscar el usuario por email
+  const user = await User.findOne({ email }).select("+password");
+  if (!user) {
+    return next(new ErrorHandler("Invalid email or password", 400));
+  }
+
+  // Verificar la contraseña
+  const isPasswordMatched = await user.comparePassword(password);
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Invalid email or password", 400));
+  }
+
+  // Generar token y enviar respuesta
+  generateToken(user, "Login successful for dashboard!", 200, res);
 });
